@@ -1,469 +1,2053 @@
 
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BESCOM Insight Engine </title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f7f8fa;
-      --surface: #ffffff;
-      --surface-2: #eef2f5;
-      --ink: #102033;
-      --muted: #546273;
-      --line: #d7dde5;
-      --primary: #12395b;
-      --accent: #2d6f73;
-      --ok: #2d6f73;
-      --warn: #12395b;
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(16,32,51,0.08);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.55;
-    }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    .hero {
-      background: linear-gradient(180deg, var(--surface), var(--surface-2));
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: 32px;
-      display: grid;
-      grid-template-columns: 1.35fr 0.85fr;
-      gap: 24px;
-    }
-    .eyebrow, .pill { text-transform: uppercase; letter-spacing: .12em; font-size: 12px; font-weight: 700; color: var(--accent); }
-    h1 { margin: 8px 0 12px; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.02; }
-    .sub { font-size: 1.05rem; color: var(--muted); max-width: 60ch; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
-    .btn {
-      border: 1px solid var(--primary);
-      background: var(--primary);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn.secondary { background: transparent; color: var(--primary); }
-    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .metric {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 16px;
-    }
-    .metric .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .metric .v { font-size: 1.7rem; font-weight: 800; margin-top: 6px; color: var(--primary); }
-    section { margin-top: 28px; }
-    .section-title {
-      margin: 0 0 14px;
-      font-size: 1.45rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .section-title::before {
-      content: '';
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex: 0 0 auto;
-    }
-    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-    .card h3 { margin: 0 0 10px; color: var(--primary); font-size: 1.05rem; }
-    .card ul { margin: 0; padding-left: 18px; color: var(--muted); }
-    .architecture {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    .flow-wrap {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-    .flow-title { margin: 0 0 14px; font-size: 1.1rem; color: var(--primary); }
-    .flowchart {
-      display: grid;
-      gap: 10px;
-      justify-items: center;
-    }
-    .node {
-      width: min(100%, 360px);
-      background: var(--surface-2);
-      border: 2px solid var(--primary);
-      color: var(--ink);
-      border-radius: 14px;
-      padding: 12px 14px;
-      text-align: center;
-      font-weight: 600;
-    }
-    .node.accent { border-color: var(--accent); background: #f1f7f7; }
-    .arrow { color: var(--accent); font-size: 1.5rem; line-height: 1; font-weight: 800; }
-    .two-col { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; }
-    .prototype {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .proto-head {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      display: flex; justify-content: space-between; align-items: center; gap: 12px;
-      background: var(--surface-2);
-    }
-    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-    .tab {
-      padding: 10px 12px; border-radius: 999px; border: 1px solid var(--line); background: white; cursor: pointer; font-weight: 600; color: var(--primary);
-    }
-    .tab.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .proto-body { padding: 20px; }
-    .panel { display: none; }
-    .panel.active { display: block; }
-    .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-    .kpi { border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: var(--surface-2); }
-    .kpi label { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .kpi strong { font-size: 1.5rem; color: var(--primary); }
-    .chart-box {
-      margin-top: 14px; border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: white;
-    }
-    .bars { display: flex; align-items: end; gap: 10px; height: 180px; margin-top: 14px; }
-    .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .bar {
-      width: 100%; max-width: 42px; border-radius: 10px 10px 0 0; background: var(--primary); position: relative;
-    }
-    .bar.accent { background: var(--accent); }
-    .bar span {
-      position: absolute; top: -24px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--muted); font-weight: 700;
-    }
-    .axis { font-size: 12px; color: var(--muted); }
-    .controls { display: grid; gap: 14px; }
-    .control { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
-    .control label { font-weight: 700; color: var(--primary); display: block; margin-bottom: 8px; }
-    input[type="range"] { width: 100%; accent-color: var(--accent); }
-    .alert-box {
-      margin-top: 14px; border: 1px solid var(--line); border-radius: 18px; padding: 16px; background: var(--surface-2);
-    }
-    .status {
-      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px; font-weight: 700; font-size: 14px;
-      background: #eef6f6; color: var(--accent); border: 1px solid #cfe2e2;
-    }
-    .status.high { background: #eef2f7; color: var(--primary); border-color: #ccd8e5; }
-    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 16px; overflow: hidden; }
-    th, td { border: 1px solid var(--line); padding: 12px; text-align: left; }
-    th { background: var(--surface-2); color: var(--primary); }
-    .note { color: var(--muted); font-size: .95rem; }
-    .footer-note { text-align: center; color: var(--muted); font-size: .9rem; margin: 26px 0 8px; }
-    @media (max-width: 980px) {
-      .hero, .cards, .architecture, .two-col, .kpi-row { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BESCOM Insight Engine — Smart Meter Intelligence</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg:       #0b0f1a;
+    --bg2:      #111827;
+    --bg3:      #1a2235;
+    --bg4:      #1e2d42;
+    --border:   rgba(99,132,199,0.15);
+    --border2:  rgba(99,132,199,0.28);
+    --text:     #e2e8f4;
+    --text2:    #8fa3c4;
+    --text3:    #5a7099;
+    --accent:   #3b82f6;
+    --accent2:  #60a5fa;
+    --green:    #10b981;
+    --amber:    #f59e0b;
+    --red:      #ef4444;
+    --teal:     #06b6d4;
+    --purple:   #8b5cf6;
+    --mono:     'JetBrains Mono', monospace;
+    --sans:     'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: 54px;
+    background: rgba(11,15,26,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--mono); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .logo-sub { color: var(--text3); font-size: 10px; font-weight: 400; }
+  .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .badge {
+    font-family: var(--mono); font-size: 9px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px; letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .badge-live   { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-ro     { background: rgba(59,130,246,0.12); color: var(--accent2); border: 1px solid rgba(59,130,246,0.25); }
+  .badge-synth  { background: rgba(139,92,246,0.12); color: #a78bfa; border: 1px solid rgba(139,92,246,0.25); }
+  .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 50%{opacity:.8;box-shadow:0 0 0 6px rgba(16,185,129,0)} }
+
+  /* ── LAYOUT ── */
+  .shell {
+    margin-top: 54px;
+    display: flex; height: calc(100vh - 54px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 200px; flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    padding: 16px 10px;
+    gap: 2px;
+  }
+  .nav-section { font-family: var(--mono); font-size: 9px; font-weight: 600; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 8px 4px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 7px; cursor: pointer;
+    font-size: 12px; color: var(--text2); transition: all .15s;
+    border: 1px solid transparent;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(59,130,246,0.12); color: var(--accent2); border-color: rgba(59,130,246,0.2); }
+  .nav-icon { width: 14px; text-align: center; font-size: 13px; }
+  .nav-count {
+    margin-left: auto; font-family: var(--mono); font-size: 9px; font-weight: 600;
+    background: rgba(239,68,68,0.18); color: #fca5a5;
+    padding: 1px 5px; border-radius: 10px;
+  }
+  .nav-count.green { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+  .sidebar-bottom { margin-top: auto; }
+  .model-status { background: var(--bg3); border-radius: 8px; padding: 10px 10px; border: 1px solid var(--border); }
+  .model-status-title { font-family: var(--mono); font-size: 9px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .model-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; font-size: 10px; }
+  .model-name { color: var(--text2); }
+  .model-ok { color: var(--green); font-family: var(--mono); font-size: 9px; }
+  .model-warn { color: var(--amber); font-family: var(--mono); font-size: 9px; }
+
+  /* ── MAIN ── */
+  .main { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── KPI ROW ── */
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .kpi {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; position: relative; overflow: hidden;
+    transition: border-color .2s;
+  }
+  .kpi::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .kpi.good::before { background: linear-gradient(90deg, var(--green), transparent); }
+  .kpi.warn::before { background: linear-gradient(90deg, var(--amber), transparent); }
+  .kpi.info::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .kpi-label { font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.05em; margin-bottom: 5px; }
+  .kpi-val { font-size: 22px; font-weight: 700; font-family: var(--mono); line-height: 1; }
+  .kpi-val.green { color: var(--green); }
+  .kpi-val.amber { color: var(--amber); }
+  .kpi-val.blue  { color: var(--accent2); }
+  .kpi-target { font-size: 9px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+  .kpi-bar { height: 2px; background: var(--bg4); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .kpi-bar-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 2px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+  .tab {
+    flex: 1; text-align: center; padding: 7px 10px; border-radius: 7px; cursor: pointer;
+    font-size: 11px; font-weight: 500; color: var(--text3); transition: all .15s;
+  }
+  .tab:hover { color: var(--text2); }
+  .tab.active { background: var(--bg4); color: var(--text); border: 1px solid var(--border2); }
+
+  /* ── PANELS ── */
+  .panel { display: none; flex-direction: column; gap: 14px; }
+  .panel.active { display: flex; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 14px; border-bottom: 1px solid var(--border);
+  }
+  .card-title { font-size: 11px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+  .card-meta  { font-size: 10px; color: var(--text3); font-family: var(--mono); }
+  .card-body  { padding: 14px; }
+
+  /* ── TWO-COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .chart-wrap { height: 250px; position: relative; }
+
+  /* ── ZONES ── */
+  .zone-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .zone-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px;
+    cursor: pointer; transition: all .2s;
+  }
+  .zone-card:hover { border-color: var(--border2); background: var(--bg4); }
+  .zone-card.active { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+  .zone-name { font-size: 10px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .zone-stat { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 9px; }
+  .zone-stat-label { color: var(--text3); font-family: var(--mono); }
+  .zone-stat-val { color: var(--text2); font-family: var(--mono); }
+  .zone-stat-val.high { color: var(--red); }
+  .zone-stat-val.med { color: var(--amber); }
+  .zone-stat-val.ok { color: var(--green); }
+  .zone-mini { display: flex; gap: 1px; margin-top: 6px; }
+  .zone-mini-bar { flex: 1; height: 18px; background: var(--bg); border-radius: 2px; position: relative; }
+  .zone-mini-fill { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, var(--accent), rgba(59,130,246,0.5)); border-radius: 2px 2px 0 0; }
+
+  /* ── FORECAST CONTROLS ── */
+  .fc-ctrl { display: flex; gap: 6px; }
+  .fc-btn {
+    padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 500;
+    background: var(--bg3); color: var(--text3); border: 1px solid var(--border);
+    cursor: pointer; transition: all .15s; font-family: var(--mono);
+  }
+  .fc-btn:hover { background: var(--bg4); color: var(--text2); }
+  .fc-btn.active { background: rgba(59,130,246,0.12); color: var(--accent2); border-color: var(--accent); }
+
+  /* ── ALERTS ── */
+  .alert-list { display: flex; flex-direction: column; gap: 6px; max-height: 550px; overflow-y: auto; padding-right: 4px; }
+  .alert-item {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; cursor: pointer; transition: all .2s; position: relative;
+  }
+  .alert-item::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--red); border-radius: 8px 0 0 8px;
+  }
+  .alert-item.medium::before { background: var(--amber); }
+  .alert-item.low::before { background: var(--teal); }
+  .alert-item:hover { background: var(--bg4); border-color: var(--border2); }
+  .alert-item.active { border-color: var(--accent); background: rgba(59,130,246,0.06); }
+  .alert-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+  .alert-badge {
+    font-family: var(--mono); font-size: 8px; font-weight: 600; padding: 2px 6px;
+    border-radius: 4px; letter-spacing: 0.05em;
+  }
+  .alert-badge.high { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+  .alert-badge.medium { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+  .alert-badge.low { background: rgba(6,182,212,0.15); color: #67e8f9; border: 1px solid rgba(6,182,212,0.3); }
+  .alert-type { font-size: 11px; font-weight: 600; color: var(--text); }
+  .alert-meta { display: flex; gap: 8px; font-size: 9px; color: var(--text3); margin-bottom: 6px; font-family: var(--mono); }
+  .alert-reason { 
+    font-size: 9px; 
+    color: var(--accent2); 
+    font-family: var(--mono); 
+    background: rgba(59,130,246,0.08);
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 6px;
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .alert-conf { font-size: 9px; color: var(--text3); font-family: var(--mono); }
+  .alert-conf span { color: var(--accent2); font-weight: 600; }
+  
+  /* ── ALERT ACTIONS ── */
+  .alert-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+  .alert-btn {
+    flex: 1;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+    border: 1px solid;
+  }
+  .alert-btn-accept {
+    background: rgba(16,185,129,0.12);
+    color: var(--green);
+    border-color: rgba(16,185,129,0.3);
+  }
+  .alert-btn-accept:hover {
+    background: rgba(16,185,129,0.18);
+    border-color: rgba(16,185,129,0.4);
+  }
+  .alert-btn-dismiss {
+    background: rgba(100,116,139,0.12);
+    color: var(--text2);
+    border-color: rgba(100,116,139,0.3);
+  }
+  .alert-btn-dismiss:hover {
+    background: rgba(100,116,139,0.18);
+    border-color: rgba(100,116,139,0.4);
+  }
+  .alert-btn.actioned {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .alert-status {
+    font-size: 9px;
+    font-family: var(--mono);
+    color: var(--text3);
+    text-align: center;
+    padding: 4px;
+  }
+  .alert-status.accepted { color: var(--green); }
+  .alert-status.dismissed { color: var(--text3); }
+
+  /* ── SPIKE ALERT NOTIFICATION ── */
+  .spike-notification {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    width: 340px;
+    background: var(--bg2);
+    border: 1px solid var(--red);
+    border-left: 4px solid var(--red);
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 200;
+    animation: slideIn 0.3s ease-out;
+    display: none;
+  }
+  .spike-notification.show {
+    display: block;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  .spike-notif-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .spike-notif-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(239,68,68,0.15);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .spike-notif-title {
+    flex: 1;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .spike-notif-close {
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 18px;
+    line-height: 1;
+    padding: 4px;
+  }
+  .spike-notif-close:hover {
+    color: var(--text);
+  }
+  .spike-notif-body {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+  .spike-notif-data {
+    background: var(--bg3);
+    border-radius: 6px;
+    padding: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+  .spike-notif-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .spike-notif-row:last-child {
+    margin-bottom: 0;
+  }
+  .spike-notif-label {
+    color: var(--text3);
+  }
+  .spike-notif-value {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .spike-notif-value.danger {
+    color: var(--red);
+  }
+  .spike-notif-action {
+    padding: 7px 12px;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 6px;
+    color: var(--red);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: var(--mono);
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+  }
+  .spike-notif-action:hover {
+    background: rgba(239,68,68,0.22);
+    border-color: rgba(239,68,68,0.4);
+  }
+
+  /* ── SHAP ── */
+  .shap-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .shap-label { width: 120px; font-size: 10px; color: var(--text2); font-family: var(--mono); }
+  .shap-bar-wrap { flex: 1; height: 16px; background: var(--bg); border-radius: 4px; position: relative; overflow: hidden; }
+  .shap-bar { height: 100%; border-radius: 4px; transition: width .6s ease; }
+  .shap-bar.pos { background: linear-gradient(90deg, var(--red), rgba(239,68,68,0.6)); }
+  .shap-bar.neg { background: linear-gradient(90deg, var(--green), rgba(16,185,129,0.6)); }
+  .shap-val { font-size: 9px; font-weight: 600; color: var(--text); font-family: var(--mono); min-width: 40px; text-align: right; }
+
+  /* ── AUDIT ── */
+  .audit-list { display: flex; flex-direction: column; gap: 4px; max-height: 350px; overflow-y: auto; }
+  .audit-item {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; transition: all .2s;
+  }
+  .audit-item:hover { background: var(--bg4); }
+  .audit-time { font-family: var(--mono); color: var(--text3); font-size: 9px; }
+  .audit-user { color: var(--text2); }
+  .audit-action { font-family: var(--mono); font-size: 9px; }
+  .audit-action.accept { color: var(--green); }
+  .audit-action.dismiss { color: var(--amber); }
+  .audit-action.inspect { color: var(--accent2); }
+
+  /* ── WORK ORDER CTA ── */
+  .work-order-cta {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(59,130,246,0.12);
+    border: 1px solid rgba(59,130,246,0.3);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .work-order-label {
+    font-size: 10px;
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-weight: 600;
+  }
+  .work-order-id {
+    font-size: 9px;
+    color: var(--text3);
+    font-family: var(--mono);
+  }
+  .work-order-btn {
+    padding: 5px 10px;
+    background: rgba(59,130,246,0.18);
+    border: 1px solid rgba(59,130,246,0.4);
+    border-radius: 5px;
+    color: var(--accent2);
+    font-size: 9px;
+    font-weight: 600;
+    font-family: var(--mono);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .15s;
+  }
+  .work-order-btn:hover { background: rgba(59,130,246,0.28); }
+
+  /* ── SIDE-BY-SIDE METER COMPARISON ── */
+  .meter-compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .meter-compare-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .meter-compare-card.normal { border-left: 3px solid var(--green); }
+  .meter-compare-card.suspicious { border-left: 3px solid var(--red); }
+  .meter-compare-title {
+    font-size: 9px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .meter-compare-title.normal-title { color: var(--green); }
+  .meter-compare-title.suspicious-title { color: var(--red); }
+  .meter-compare-mini { height: 48px; position: relative; }
+  .meter-compare-stat {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-family: var(--mono);
+    margin-top: 5px;
+  }
+  .meter-compare-stat-label { color: var(--text3); }
+  .meter-compare-stat-val { color: var(--text2); }
+  .meter-compare-stat-val.bad { color: var(--red); }
+
+  /* ── SPIKE INLINE CARD ── */
+  .spike-inline-card {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.35);
+    border-left: 4px solid var(--red);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2px;
+  }
+  .spike-inline-card.show { display: flex; }
+  .spike-inline-icon { font-size: 20px; }
+  .spike-inline-content { flex: 1; }
+  .spike-inline-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--red);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+  }
+  .spike-inline-body { font-size: 10px; color: var(--text2); line-height: 1.4; }
+  .spike-inline-body strong { color: var(--text); }
+  .spike-inline-dismiss {
+    font-size: 18px;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+  .spike-inline-dismiss:hover { color: var(--text); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text3); }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+  .legend-line {
+    width: 20px; height: 2px; border-radius: 1px;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline-wrap { display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding-bottom:4px; }
+  .pipeline-stage { flex:1; min-width:130px; border-radius:8px; padding:12px 10px; border:1px solid var(--border); }
+  .stage-ingest    { background:rgba(59,130,246,0.07);  border-color:rgba(59,130,246,0.2); }
+  .stage-preprocess{ background:rgba(139,92,246,0.07);  border-color:rgba(139,92,246,0.2); }
+  .stage-features  { background:rgba(6,182,212,0.07);   border-color:rgba(6,182,212,0.2); }
+  .stage-models    { background:rgba(245,158,11,0.07);  border-color:rgba(245,158,11,0.2); }
+  .stage-output    { background:rgba(16,185,129,0.07);  border-color:rgba(16,185,129,0.2); }
+  .stage-feedback  { background:rgba(239,68,68,0.07);   border-color:rgba(239,68,68,0.2); }
+  .ps-icon  { font-size:18px; margin-bottom:5px; }
+  .ps-title { font-family:var(--mono); font-size:9px; font-weight:700; letter-spacing:0.08em; color:var(--text2); margin-bottom:8px; text-transform:uppercase; }
+  .ps-items { display:flex; flex-direction:column; gap:4px; }
+  .ps-item  { font-size:9px; color:var(--text3); font-family:var(--mono); line-height:1.4; padding:2px 0; border-bottom:1px solid var(--border); }
+  .ps-item:last-child { border-bottom:none; }
+  .pipeline-arrow { align-self:center; font-size:18px; color:var(--text3); padding:0 6px; flex-shrink:0; }
+
+  /* ── SD TABLES ── */
+  .sd-section-title { font-family:var(--mono); font-size:9px; font-weight:700; color:var(--text3); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:7px; }
+  .sd-table { display:flex; flex-direction:column; gap:4px; }
+  .sd-row { display:flex; align-items:center; gap:8px; background:var(--bg3); border-radius:5px; padding:6px 8px; border:1px solid var(--border); }
+  .sd-col-label { width:130px; font-size:9px; font-family:var(--mono); color:var(--text2); flex-shrink:0; }
+  .sd-col-val   { flex:1; font-size:9px; color:var(--text3); line-height:1.4; }
+  .sd-col-tag   { font-family:var(--mono); font-size:8px; font-weight:700; padding:2px 6px; border-radius:3px; white-space:nowrap; flex-shrink:0; }
+  .tag-blue  { background:rgba(59,130,246,0.15);  color:var(--accent2); border:1px solid rgba(59,130,246,0.25); }
+  .tag-amber { background:rgba(245,158,11,0.15);  color:#fcd34d;        border:1px solid rgba(245,158,11,0.25); }
+  .tag-red   { background:rgba(239,68,68,0.15);   color:#fca5a5;        border:1px solid rgba(239,68,68,0.25); }
+  .tag-green { background:rgba(16,185,129,0.12);  color:#6ee7b7;        border:1px solid rgba(16,185,129,0.25); }
+  .sd-baseline-note { font-size:9px; color:var(--text3); font-family:var(--mono); font-style:italic; padding:5px 8px; background:var(--bg3); border-radius:4px; margin-top:5px; border-left:2px solid var(--border2); }
+
+  /* ── EVAL METRICS ── */
+  .eval-metric-row  { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+  .eval-metric-label{ width:160px; font-size:10px; font-family:var(--mono); color:var(--text2); flex-shrink:0; }
+  .eval-metric-sub  { font-size:8px; color:var(--text3); }
+  .eval-bar-wrap    { flex:1; height:6px; background:var(--bg4); border-radius:3px; overflow:hidden; }
+  .eval-bar         { height:100%; border-radius:3px; transition:width 1s ease; }
+  .eval-metric-val  { width:52px; text-align:right; font-family:var(--mono); font-size:11px; font-weight:700; flex-shrink:0; }
+  .eval-metric-val.green { color:var(--green); }
+  .eval-metric-val.blue  { color:var(--accent2); }
+  .eval-metric-target { width:100px; font-size:9px; color:var(--text3); font-family:var(--mono); flex-shrink:0; }
+
+  /* ── RISK TABLE ── */
+  .risk-table  { display:flex; flex-direction:column; gap:6px; }
+  .risk-header { display:grid; grid-template-columns:1.8fr 60px 3fr 80px; gap:8px; padding:4px 8px; font-family:var(--mono); font-size:9px; font-weight:700; color:var(--text3); letter-spacing:0.06em; text-transform:uppercase; }
+  .risk-row    { display:grid; grid-template-columns:1.8fr 60px 3fr 80px; gap:8px; align-items:center; background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:8px; }
+  .risk-row:hover { background:var(--bg4); }
+  .risk-name { font-size:10px; font-weight:500; color:var(--text); }
+  .risk-pill { font-family:var(--mono); font-size:8px; font-weight:700; padding:3px 6px; border-radius:4px; text-align:center; }
+  .pill-red   { background:rgba(239,68,68,0.15);  color:#fca5a5; border:1px solid rgba(239,68,68,0.3); }
+  .pill-amber { background:rgba(245,158,11,0.15); color:#fcd34d; border:1px solid rgba(245,158,11,0.3); }
+  .pill-blue  { background:rgba(59,130,246,0.12); color:var(--accent2); border:1px solid rgba(59,130,246,0.25); }
+  .risk-mit   { font-size:9px; color:var(--text3); line-height:1.5; }
+  .risk-status{ font-family:var(--mono); font-size:8px; font-weight:700; padding:3px 6px; border-radius:4px; text-align:center; white-space:nowrap; }
+  .status-active  { background:rgba(239,68,68,0.12);  color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
+  .status-warn    { background:rgba(245,158,11,0.12); color:#fcd34d; border:1px solid rgba(245,158,11,0.25); }
+  .status-ok      { background:rgba(16,185,129,0.1);  color:#6ee7b7; border:1px solid rgba(16,185,129,0.2); }
+
+  /* ── IMPLEMENTATION TIMELINE ── */
+  .impl-timeline { display:flex; flex-direction:column; gap:8px; }
+  .impl-phase { border-radius:8px; padding:10px 12px; border:1px solid var(--border); border-left-width:3px; }
+  .phase-done    { border-left-color:var(--green);  background:rgba(16,185,129,0.04); }
+  .phase-active  { border-left-color:var(--accent); background:rgba(59,130,246,0.06); }
+  .phase-pending { border-left-color:var(--bg4);    background:var(--bg3); }
+  .impl-phase-head  { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+  .impl-phase-num   { font-family:var(--mono); font-size:11px; font-weight:700; color:var(--text3); min-width:22px; }
+  .impl-phase-title { font-size:11px; font-weight:600; color:var(--text); flex:1; }
+  .impl-phase-period{ font-family:var(--mono); font-size:9px; color:var(--text3); }
+  .impl-phase-status{ font-family:var(--mono); font-size:8px; font-weight:700; padding:2px 7px; border-radius:10px; }
+  .status-done    { background:rgba(16,185,129,0.12); color:var(--green);  border:1px solid rgba(16,185,129,0.25); }
+  .status-pending { background:rgba(100,116,139,0.12); color:var(--text3); border:1px solid rgba(100,116,139,0.2); }
+  .impl-phase-items { font-size:9px; color:var(--text3); font-family:var(--mono); line-height:1.7; }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div>
-        <div class="eyebrow">BESCOM Insight Engine</div>
-        <h1>Smart Meter Intelligence & Loss Detection</h1>
-        <p class="sub">A decision-support concept for BESCOM that combines zone-level demand forecasting, anomaly review, and explainable inspection flows without modifying existing infrastructure.</p>
-        <div class="hero-actions">
-          <button class="btn" onclick="document.getElementById('prototype').scrollIntoView({behavior:'smooth'})">Open working prototype</button>
-          <button class="btn secondary" onclick="document.getElementById('flows').scrollIntoView({behavior:'smooth'})">View clear flowcharts</button>
+
+<!-- ── SPIKE NOTIFICATION ── -->
+<div class="spike-notification" id="spikeNotification">
+  <div class="spike-notif-head">
+    <div class="spike-notif-icon">⚠️</div>
+    <div class="spike-notif-title">DEMAND SPIKE ALERT</div>
+    <div class="spike-notif-close" onclick="closeSpikeNotif()">×</div>
+  </div>
+  <div class="spike-notif-body">
+    Forecast breach detected in <strong id="spikeZone">—</strong>. Predicted demand exceeds risk threshold during evening peak window.
+  </div>
+  <div class="spike-notif-data">
+    <div class="spike-notif-row">
+      <span class="spike-notif-label">Peak Window:</span>
+      <span class="spike-notif-value" id="spikePeakWindow">18:00–21:00</span>
+    </div>
+    <div class="spike-notif-row">
+      <span class="spike-notif-label">Forecast Peak:</span>
+      <span class="spike-notif-value danger" id="spikeForecast">—</span>
+    </div>
+    <div class="spike-notif-row">
+      <span class="spike-notif-label">Risk Threshold:</span>
+      <span class="spike-notif-value" id="spikeThreshold">295 MW</span>
+    </div>
+    <div class="spike-notif-row">
+      <span class="spike-notif-label">Breach Margin:</span>
+      <span class="spike-notif-value danger" id="spikeBreach">—</span>
+    </div>
+  </div>
+  <div class="spike-notif-action" onclick="goToForecast()">
+    VIEW FORECAST DETAILS →
+  </div>
+</div>
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div>BESCOM INSIGHT ENGINE</div>
+      <div class="logo-sub">Smart Meter Intelligence</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="pulse"></div>
+    <span class="badge badge-live">LIVE</span>
+    <span class="badge badge-ro">READ-ONLY PILOT</span>
+    <span class="badge badge-synth">SYNTHETIC DATA</span>
+  </div>
+</div>
+
+<!-- ── SHELL ── -->
+<div class="shell">
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+    <div class="nav-section">Navigation</div>
+    <div class="nav-item active" onclick="switchPanel('forecast')">
+      <span class="nav-icon">📊</span> Demand Forecast
+    </div>
+    <div class="nav-item" onclick="switchPanel('anomaly')">
+      <span class="nav-icon">🔍</span> Anomaly Detection <span class="nav-count">8</span>
+    </div>
+    <div class="nav-item" onclick="switchPanel('audit')">
+      <span class="nav-icon">📋</span> Audit Log <span class="nav-count green">147</span>
+    </div>
+    <div class="nav-item" onclick="switchPanel('sysdesign')">
+      <span class="nav-icon">🏗️</span> System Design
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="model-status">
+        <div class="model-status-title">Model Health</div>
+        <div class="model-row">
+          <span class="model-name">LSTM Forecast</span>
+          <span class="model-ok">✓ OK</span>
+        </div>
+        <div class="model-row">
+          <span class="model-name">Isolation Forest</span>
+          <span class="model-ok">✓ OK</span>
+        </div>
+        <div class="model-row">
+          <span class="model-name">LSTM AutoEnc</span>
+          <span class="model-warn">⚠ DRIFT</span>
         </div>
       </div>
-      <div class="mini-grid">
-        <div class="metric"><div class="k">Forecast cadence</div><div class="v">Hourly</div></div>
-        <div class="metric"><div class="k">Detection mode</div><div class="v">Read-only</div></div>
-        <div class="metric"><div class="k">Audit trail</div><div class="v">SHAP + logs</div></div>
-        <div class="metric"><div class="k">Data readiness</div><div class="v">Masked data</div></div>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title">Problem framing</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Challenges</h3>
-          <ul>
-            <li>Demand spikes are hard to predict locally.</li>
-            <li>Theft and tampering are not detected systematically.</li>
-            <li>Smart meter data remains underused.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Goals</h3>
-          <ul>
-            <li>Forecast hourly and day-ahead demand.</li>
-            <li>Classify zones by load risk.</li>
-            <li>Flag anomalous meters automatically.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Constraints</h3>
-          <ul>
-            <li>No change to existing systems.</li>
-            <li>Decision-support only, no auto action.</li>
-            <li>Explainable and auditable outputs.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="flows">
-      <h2 class="section-title">Clear flowcharts</h2>
-      <div class="architecture">
-        <div class="flow-wrap">
-          <h3 class="flow-title">Demand forecasting flow</h3>
-          <div class="flowchart">
-            <div class="node accent">15-min smart meter and feeder data</div>
-            <div class="arrow">↓</div>
-            <div class="node">Cleaning, interpolation, validation</div>
-            <div class="arrow">↓</div>
-            <div class="node">Feature engineering: hour, day, lag, weather</div>
-            <div class="arrow">↓</div>
-            <div class="node accent">Model ensemble: XGBoost + LSTM + Prophet</div>
-            <div class="arrow">↓</div>
-            <div class="node">Forecast output: hourly and day-ahead</div>
-            <div class="arrow">↓</div>
-            <div class="node accent">Zone risk: Low / Medium / High</div>
-          </div>
-        </div>
-        <div class="flow-wrap">
-          <h3 class="flow-title">Anomaly detection flow</h3>
-          <div class="flowchart">
-            <div class="node accent">Meter consumption time series</div>
-            <div class="arrow">↓</div>
-            <div class="node">Peer-group baseline and variance check</div>
-            <div class="arrow">↓</div>
-            <div class="node">Isolation Forest outlier score</div>
-            <div class="arrow">↓</div>
-            <div class="node">Autoencoder reconstruction error</div>
-            <div class="arrow">↓</div>
-            <div class="node accent">Weighted score fusion</div>
-            <div class="arrow">↓</div>
-            <div class="node">Adaptive threshold review</div>
-            <div class="arrow">↓</div>
-            <div class="node accent">Alert with confidence and reason code</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="prototype">
-      <h2 class="section-title">Working prototype</h2>
-      <div class="two-col">
-        <div class="prototype">
-          <div class="proto-head">
-            <div>
-              <strong style="color:var(--primary)">Inspector workspace</strong><br>
-              <span class="note">Interactive mock dashboard with two views</span>
-            </div>
-            <div class="tabs">
-              <button class="tab active" data-tab="forecast">Forecast</button>
-              <button class="tab" data-tab="anomaly">Anomaly</button>
-            </div>
-          </div>
-          <div class="proto-body">
-            <div class="panel active" id="forecast-panel">
-              <div class="kpi-row">
-                <div class="kpi"><label>Zone</label><strong id="zoneName">West-12</strong></div>
-                <div class="kpi"><label>Next hour</label><strong id="nextHour">86 kWh</strong></div>
-                <div class="kpi"><label>Day-ahead</label><strong id="dayAhead">524 kWh</strong></div>
-                <div class="kpi"><label>Risk</label><strong id="riskText">Medium</strong></div>
-              </div>
-              <div class="chart-box">
-                <div style="display:flex;justify-content:space-between;gap:10px;align-items:end;flex-wrap:wrap;">
-                  <div>
-                    <strong style="color:var(--primary)">6-hour load outlook</strong><br>
-                    <span class="note">Bars respond to load and weather sliders.</span>
-                  </div>
-                  <span class="status" id="forecastStatus">Normal operating envelope</span>
-                </div>
-                <div class="bars" id="bars"></div>
-              </div>
-            </div>
-            <div class="panel" id="anomaly-panel">
-              <div class="kpi-row">
-                <div class="kpi"><label>Meter ID</label><strong>MTR-44721</strong></div>
-                <div class="kpi"><label>Anomaly score</label><strong id="anomScore">0.42</strong></div>
-                <div class="kpi"><label>Confidence</label><strong id="anomConfidence">67%</strong></div>
-                <div class="kpi"><label>Review state</label><strong id="anomState">Queue</strong></div>
-              </div>
-              <div class="alert-box">
-                <span class="status high" id="alertBadge">Review recommended</span>
-                <p style="margin:12px 0 0">Reason code: <strong id="reasonCode">Night-load deviation</strong></p>
-                <p class="note" id="explanation">Observed usage is above peer-group baseline and diverges from the previous three-night pattern.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="controls">
-          <div class="control">
-            <label for="loadRange">Load intensity</label>
-            <input id="loadRange" type="range" min="40" max="120" value="72" />
-            <div class="note">Simulates zone demand pressure for the next 6 hours.</div>
-          </div>
-          <div class="control">
-            <label for="weatherRange">Weather stress</label>
-            <input id="weatherRange" type="range" min="0" max="100" value="35" />
-            <div class="note">Represents weather-driven volatility and cooling load effect.</div>
-          </div>
-          <div class="control">
-            <label for="anomalyRange">Anomaly threshold</label>
-            <input id="anomalyRange" type="range" min="20" max="90" value="58" />
-            <div class="note">Adjusts the review threshold for anomaly escalation.</div>
-          </div>
-          <div class="control">
-            <strong style="color:var(--primary)">Prototype behavior</strong>
-            <ul class="note" style="margin:10px 0 0;padding-left:18px;">
-              <li>Forecast view updates bars, output values, and risk state.</li>
-              <li>Anomaly view updates confidence, reason code, and review badge.</li>
-              <li>Palette stays within two main colours for a cleaner presentation.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <h2 class="section-title">Implementation outline</h2>
-      <table>
-        <thead>
-          <tr><th>Phase</th><th>Duration</th><th>Output</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Data ingestion and EDA</td><td>2 weeks</td><td>Validated masked-data pipeline</td></tr>
-          <tr><td>Forecasting MVP</td><td>3 weeks</td><td>Zone-level hourly and day-ahead model</td></tr>
-          <tr><td>Anomaly MVP</td><td>3 weeks</td><td>Meter flags with score explanation</td></tr>
-          <tr><td>Dashboard and audit log</td><td>2 weeks</td><td>Inspector UI and exportable review log</td></tr>
-          <tr><td>Validation and tuning</td><td>2 weeks</td><td>False-positive control and threshold tuning</td></tr>
-          <tr><td>Read-only deployment</td><td>1 week</td><td>Decision-support overlay</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <p class="footer-note">BESCOM smart meter concept·</p>
+    </div>
   </div>
 
-  <script>
-    const tabs = document.querySelectorAll('.tab');
-    const panels = {
-      forecast: document.getElementById('forecast-panel'),
-      anomaly: document.getElementById('anomaly-panel')
-    };
+  <!-- ── MAIN ── -->
+  <div class="main">
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        Object.values(panels).forEach(p => p.classList.remove('active'));
-        panels[tab.dataset.tab].classList.add('active');
-      });
-    });
+    <!-- ── KPI ROW ── -->
+    <div class="kpi-row">
+      <div class="kpi good">
+        <div class="kpi-label">FORECAST ACCURACY</div>
+        <div class="kpi-val green">91.2<span style="font-size:14px">%</span></div>
+        <div class="kpi-target">TARGET: 85%</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" style="width:91.2%;background:var(--green)"></div></div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">ANOMALY ALERTS</div>
+        <div class="kpi-val amber">8</div>
+        <div class="kpi-target">HIGH: 3 | MEDIUM: 5</div>
+      </div>
+      <div class="kpi good">
+        <div class="kpi-label">INSPECTOR ACCEPT RATE</div>
+        <div class="kpi-val green" id="acceptRateKpi">72<span style="font-size:14px">%</span></div>
+        <div class="kpi-target" id="acceptRateDetail">ACCEPTED: 14 | DISMISSED: 6</div>
+        <div class="kpi-bar"><div class="kpi-bar-fill" id="acceptRateBar" style="width:72%;background:var(--green)"></div></div>
+      </div>
+      <div class="kpi info">
+        <div class="kpi-label">METERS MONITORED</div>
+        <div class="kpi-val blue">2.4<span style="font-size:14px">M</span></div>
+        <div class="kpi-target">ACTIVE: 2,387,421</div>
+      </div>
+      <div class="kpi info">
+        <div class="kpi-label">DATA FRESHNESS</div>
+        <div class="kpi-val blue">12<span style="font-size:14px">s</span></div>
+        <div class="kpi-target">15-MIN INTERVALS · 2.4M METERS · 8 LOCALITIES</div>
+      </div>
+    </div>
 
-    const loadRange = document.getElementById('loadRange');
-    const weatherRange = document.getElementById('weatherRange');
-    const anomalyRange = document.getElementById('anomalyRange');
-    const bars = document.getElementById('bars');
+    <!-- ── TABS ── -->
+    <div class="tabs">
+      <div class="tab active" onclick="switchPanel('forecast')">Demand Forecast</div>
+      <div class="tab" onclick="switchPanel('anomaly')">Anomaly Detection</div>
+      <div class="tab" onclick="switchPanel('audit')">Audit & Explainability</div>
+      <div class="tab" onclick="switchPanel('sysdesign')">System Design</div>
+    </div>
 
-    function renderBars() {
-      const load = Number(loadRange.value);
-      const weather = Number(weatherRange.value);
-      const base = [0.86, 0.92, 1.0, 1.08, 0.98, 0.9];
-      const values = base.map((m, i) => Math.round((load * m) + (weather * (0.08 + i * 0.01))));
-      bars.innerHTML = '';
-      values.forEach((v, i) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'bar-wrap';
-        const bar = document.createElement('div');
-        bar.className = 'bar' + (i >= 3 ? ' accent' : '');
-        bar.style.height = Math.max(36, v * 1.1) + 'px';
-        bar.innerHTML = '<span>' + v + '</span>';
-        const axis = document.createElement('div');
-        axis.className = 'axis';
-        axis.textContent = 'H+' + (i+1);
-        wrap.appendChild(bar);
-        wrap.appendChild(axis);
-        bars.appendChild(wrap);
-      });
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ── PANEL: FORECAST ── -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="panel active" id="panel-forecast">
 
-      const nextHour = values[0];
-      const dayAhead = values.reduce((a,b) => a+b, 0);
-      const avg = dayAhead / values.length;
-      let risk = 'Low';
-      let status = 'Stable load profile';
-      if (avg > 95) { risk = 'High'; status = 'Peak watch required'; }
-      else if (avg > 75) { risk = 'Medium'; status = 'Normal operating envelope'; }
+      <!-- Zone Grid -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Distribution Zones — Real-time Load <span style="font-family:var(--mono);font-size:9px;color:var(--text3);font-weight:400;margin-left:8px">· 15-min interval data</span></div>
+          <div class="card-meta">Updated 12s ago</div>
+        </div>
+        <div class="card-body">
+          <!-- Cluster summary strip -->
+          <div id="clusterSummary" style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;"></div>
+          <div class="zone-grid" id="zoneGrid"></div>
+        </div>
+      </div>
 
-      document.getElementById('nextHour').textContent = nextHour + ' kWh';
-      document.getElementById('dayAhead').textContent = dayAhead + ' kWh';
-      document.getElementById('riskText').textContent = risk;
-      document.getElementById('forecastStatus').textContent = status;
+      <!-- Forecast Chart -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">24-Hour Demand Forecast — <span id="fcZoneLabel">Zone A (CBD North)</span></div>
+          <div class="fc-ctrl">
+            <div class="fc-btn active" id="btn-hourly" onclick="setFcMode('hourly')">HOURLY</div>
+            <div class="fc-btn" id="btn-dayahead" onclick="setFcMode('dayahead')">7-DAY</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <!-- Inline spike alert -->
+          <div class="spike-inline-card" id="spikeInlineCard">
+            <div class="spike-inline-icon">⚡</div>
+            <div class="spike-inline-content">
+              <div class="spike-inline-title">⚠ DEMAND SPIKE INCOMING — THRESHOLD BREACH FORECAST</div>
+              <div class="spike-inline-body" id="spikeInlineBody">Forecast exceeds risk threshold in evening peak window.</div>
+            </div>
+            <div class="spike-inline-dismiss" onclick="dismissInlineSpike()">×</div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="forecastChart"></canvas>
+          </div>
+          <div class="legend">
+            <div class="legend-item"><div class="legend-line" style="background:#3b82f6"></div> Forecast</div>
+            <div class="legend-item"><div class="legend-line" style="background:rgba(148,163,184,0.7);border-top:2px dashed rgba(148,163,184,0.7);height:0;border-bottom:none"></div> Actual</div>
+            <div class="legend-item"><div class="legend-line" style="background:rgba(100,116,139,0.6);border-top:2px dashed rgba(100,116,139,0.6);height:0;border-bottom:none"></div> Hist. Average (4wk)</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(59,130,246,0.15)"></div> Confidence Interval (±σ)</div>
+            <div class="legend-item"><div class="legend-line" style="background:rgba(239,68,68,0.55);border-top:2px dashed rgba(239,68,68,0.55);height:0;border-bottom:none"></div> Risk Threshold</div>
+            <div class="legend-item"><div class="legend-dot" style="background:rgba(239,68,68,0.2);border:2px solid rgba(239,68,68,0.6)"></div> Evening Peak (18:00–21:00)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ── PANEL: ANOMALY ── -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-anomaly">
+
+      <div class="two-col">
+        <!-- Alerts -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Active Alerts (8)</div>
+            <div class="card-meta">Last 24h</div>
+          </div>
+          <div class="card-body">
+            <div class="alert-list" id="alertList"></div>
+          </div>
+        </div>
+
+        <!-- Meter Detail -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Meter Detail — <span id="meterLabel">MTR-A-08472</span></div>
+            <div class="card-meta">48h consumption</div>
+          </div>
+          <div class="card-body">
+            <!-- Side-by-side normal vs suspicious comparison -->
+            <div class="meter-compare-row">
+              <div class="meter-compare-card normal">
+                <div class="meter-compare-title normal-title">✓ Normal Peer Meter</div>
+                <canvas id="normalMiniChart" height="48"></canvas>
+                <div class="meter-compare-stat">
+                  <span class="meter-compare-stat-label">AVG</span>
+                  <span class="meter-compare-stat-val" id="normalAvg">9.4 kWh</span>
+                </div>
+                <div class="meter-compare-stat">
+                  <span class="meter-compare-stat-label">σ DEVIATION</span>
+                  <span class="meter-compare-stat-val">0.8</span>
+                </div>
+              </div>
+              <div class="meter-compare-card suspicious">
+                <div class="meter-compare-title suspicious-title">⚠ Flagged Meter</div>
+                <canvas id="suspiciousMiniChart" height="48"></canvas>
+                <div class="meter-compare-stat">
+                  <span class="meter-compare-stat-label">AVG</span>
+                  <span class="meter-compare-stat-val bad" id="suspiciousAvg">2.1 kWh</span>
+                </div>
+                <div class="meter-compare-stat">
+                  <span class="meter-compare-stat-label">σ DEVIATION</span>
+                  <span class="meter-compare-stat-val bad" id="suspiciousDev">4.2 ← flagged</span>
+                </div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="meterChart"></canvas>
+            </div>
+            <div class="legend" style="margin-top:10px">
+              <div class="legend-item"><div class="legend-line" style="background:#ef4444"></div> Meter</div>
+              <div class="legend-item"><div class="legend-line" style="background:rgba(100,116,139,0.6);border-top:2px dashed rgba(100,116,139,0.6);height:0;border-bottom:none"></div> Peer Median</div>
+              <div class="legend-item"><div class="legend-dot" style="background:rgba(59,130,246,0.1)"></div> Peer ±3σ Band</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <!-- Anomaly Scatter -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Anomaly Landscape — Confidence vs Score</div>
+            <div class="card-meta">All meters</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap">
+              <canvas id="anomalyChart"></canvas>
+            </div>
+            <div class="legend">
+              <div class="legend-item"><div class="legend-dot" style="background:rgba(239,68,68,0.8);clip-path:polygon(50% 0%, 0% 100%, 100% 100%)"></div> High Risk</div>
+              <div class="legend-item"><div class="legend-dot" style="background:rgba(245,158,11,0.8);transform:rotate(45deg)"></div> Medium Risk</div>
+              <div class="legend-item"><div class="legend-dot" style="background:rgba(16,185,129,0.5)"></div> Normal</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detector Mix -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Detection Method Mix</div>
+            <div class="card-meta">Alert sources</div>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap">
+              <canvas id="detectorChart"></canvas>
+            </div>
+            <div class="legend">
+              <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Isolation Forest (55%)</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div> LSTM AutoEncoder (35%)</div>
+              <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div> Rule-based (10%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ── PANEL: AUDIT ── -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-audit">
+
+      <div class="two-col">
+        <!-- SHAP -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">SHAP Feature Importance — <span id="shapLabel">MTR-A-08472</span></div>
+            <div class="card-meta">Alert RC-03</div>
+          </div>
+          <div class="card-body" id="shapViz"></div>
+        </div>
+
+        <!-- Audit Log -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Inspector Activity Log</div>
+            <div class="card-meta">Last 50 actions</div>
+          </div>
+          <div class="card-body">
+            <div class="audit-list" id="auditLog"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- ── PANEL: SYSTEM DESIGN ── -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <div class="panel" id="panel-sysdesign">
+
+      <!-- ── ROW 1: Pipeline Architecture ── -->
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Data Pipeline Architecture</div>
+          <div class="card-meta">End-to-end · 15-min intervals</div>
+        </div>
+        <div class="card-body">
+          <div class="pipeline-wrap">
+            <div class="pipeline-stage stage-ingest">
+              <div class="ps-icon">📡</div>
+              <div class="ps-title">INGEST</div>
+              <div class="ps-items">
+                <div class="ps-item">Smart meter AMI push</div>
+                <div class="ps-item">15-min interval batches</div>
+                <div class="ps-item">Kafka topic per zone</div>
+                <div class="ps-item">2.4M meter streams</div>
+              </div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-stage stage-preprocess">
+              <div class="ps-icon">🔧</div>
+              <div class="ps-title">PREPROCESS</div>
+              <div class="ps-items">
+                <div class="ps-item">Null/zero-read imputation</div>
+                <div class="ps-item">Outlier clipping (3σ)</div>
+                <div class="ps-item">Rolling median smoothing</div>
+                <div class="ps-item">Seasonal decomposition</div>
+              </div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-stage stage-features">
+              <div class="ps-icon">⚙️</div>
+              <div class="ps-title">FEATURE ENG.</div>
+              <div class="ps-items">
+                <div class="ps-item">Hour-of-day embedding</div>
+                <div class="ps-item">Day-of-week + holiday flag</div>
+                <div class="ps-item">Temperature lag features</div>
+                <div class="ps-item">Peer-group statistics</div>
+              </div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-stage stage-models">
+              <div class="ps-icon">🧠</div>
+              <div class="ps-title">MODELS</div>
+              <div class="ps-items">
+                <div class="ps-item">LSTM (demand forecast)</div>
+                <div class="ps-item">Isolation Forest (anomaly)</div>
+                <div class="ps-item">LSTM AutoEncoder (AE)</div>
+                <div class="ps-item">Rule engine (RC-01–05)</div>
+              </div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-stage stage-output">
+              <div class="ps-icon">📤</div>
+              <div class="ps-title">OUTPUTS</div>
+              <div class="ps-items">
+                <div class="ps-item">Zone risk classification</div>
+                <div class="ps-item">Spike alerts + RC codes</div>
+                <div class="ps-item">SHAP explanations</div>
+                <div class="ps-item">Tamper/theft flags</div>
+                <div class="ps-item">Actionable outputs: work orders</div>
+              </div>
+            </div>
+            <div class="pipeline-arrow">→</div>
+            <div class="pipeline-stage stage-feedback">
+              <div class="ps-icon">🔁</div>
+              <div class="ps-title">FEEDBACK</div>
+              <div class="ps-items">
+                <div class="ps-item">Inspector accept/dismiss</div>
+                <div class="ps-item">Threshold auto-tune</div>
+                <div class="ps-item">Weekly model retrain</div>
+                <div class="ps-item">Drift monitoring</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 2: Noise/Seasonality + Eval Metrics ── -->
+      <div class="two-col">
+
+        <!-- Noise, Seasonality, Data Gaps -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Noise, Seasonality & Data Gap Handling</div>
+            <div class="card-meta">Preprocessing strategy</div>
+          </div>
+          <div class="card-body">
+            <div class="sd-section-title">DATA GAPS & MISSING READS</div>
+            <div class="sd-table">
+              <div class="sd-row">
+                <div class="sd-col-label">Zero read &lt; 1h</div>
+                <div class="sd-col-val">Forward-fill from last valid read</div>
+                <div class="sd-col-tag tag-blue">AUTO</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Zero read 1–6h</div>
+                <div class="sd-col-val">Linear interpolation from peer median</div>
+                <div class="sd-col-tag tag-amber">FLAG</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Zero read &gt; 6h</div>
+                <div class="sd-col-val">RC-01 alert raised · marked for inspection</div>
+                <div class="sd-col-tag tag-red">ALERT</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Meter offline</div>
+                <div class="sd-col-val">Zone-level aggregate estimated from peers</div>
+                <div class="sd-col-tag tag-amber">ESTIM</div>
+              </div>
+            </div>
+            <div class="sd-section-title" style="margin-top:12px">NOISE HANDLING</div>
+            <div class="sd-table">
+              <div class="sd-row">
+                <div class="sd-col-label">Spike outliers</div>
+                <div class="sd-col-val">Winsorised at peer 99th percentile</div>
+                <div class="sd-col-tag tag-blue">PRE-MODEL</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">CT ratio errors</div>
+                <div class="sd-col-val">Multiplier anomaly detection (×10 / ×100)</div>
+                <div class="sd-col-tag tag-red">ALERT</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Communication noise</div>
+                <div class="sd-col-val">3-interval rolling median smoothing</div>
+                <div class="sd-col-tag tag-blue">AUTO</div>
+              </div>
+            </div>
+            <div class="sd-section-title" style="margin-top:12px">SEASONALITY ENCODING</div>
+            <div class="sd-table">
+              <div class="sd-row">
+                <div class="sd-col-label">Time of day</div>
+                <div class="sd-col-val">Sin/cos cyclic embedding (24h period)</div>
+                <div class="sd-col-tag tag-green">LSTM INPUT</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Day of week</div>
+                <div class="sd-col-val">One-hot + weekday/weekend binary flag</div>
+                <div class="sd-col-tag tag-green">LSTM INPUT</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Festival / holiday</div>
+                <div class="sd-col-val">Karnataka holiday calendar lookup</div>
+                <div class="sd-col-tag tag-green">LSTM INPUT</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Temperature</div>
+                <div class="sd-col-val">IMD daily max temp as exogenous variable</div>
+                <div class="sd-col-tag tag-green">LSTM INPUT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluation Metrics -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Evaluation Approach & Baselines</div>
+            <div class="card-meta">Model performance · current pilot</div>
+          </div>
+          <div class="card-body">
+            <div class="sd-section-title">DEMAND FORECAST METRICS</div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">MAPE <span class="eval-metric-sub">(Mean Abs % Error)</span></div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:87%;background:var(--green)"></div>
+              </div>
+              <div class="eval-metric-val green">8.3%</div>
+              <div class="eval-metric-target">target &lt;10%</div>
+            </div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">MAE <span class="eval-metric-sub">(Mean Abs Error)</span></div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:82%;background:var(--green)"></div>
+              </div>
+              <div class="eval-metric-val green">18.4 MW</div>
+              <div class="eval-metric-target">vs baseline 31.2</div>
+            </div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">RMSE</div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:79%;background:var(--green)"></div>
+              </div>
+              <div class="eval-metric-val green">24.1 MW</div>
+              <div class="eval-metric-target">vs baseline 41.8</div>
+            </div>
+            <div class="sd-baseline-note">Naive baseline: last-week same-hour persistence model</div>
+
+            <div class="sd-section-title" style="margin-top:14px">ANOMALY DETECTION METRICS</div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">Precision</div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:84%;background:var(--accent)"></div>
+              </div>
+              <div class="eval-metric-val blue">84%</div>
+              <div class="eval-metric-target">target &gt;80%</div>
+            </div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">Recall</div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:78%;background:var(--accent)"></div>
+              </div>
+              <div class="eval-metric-val blue">78%</div>
+              <div class="eval-metric-target">target &gt;75%</div>
+            </div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">F1 Score</div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:81%;background:var(--accent)"></div>
+              </div>
+              <div class="eval-metric-val blue">0.81</div>
+              <div class="eval-metric-target">target &gt;0.78</div>
+            </div>
+            <div class="eval-metric-row">
+              <div class="eval-metric-label">Inspector Accept Rate</div>
+              <div class="eval-bar-wrap">
+                <div class="eval-bar" style="width:72%;background:var(--teal)"></div>
+              </div>
+              <div class="eval-metric-val" style="color:var(--teal)">72%</div>
+              <div class="eval-metric-target">target &gt;70%</div>
+            </div>
+            <div class="sd-baseline-note">Anomaly baseline: z-score threshold rule (σ&gt;3) on raw reads</div>
+
+            <div class="sd-section-title" style="margin-top:14px">EVALUATION PROTOCOL</div>
+            <div class="sd-table">
+              <div class="sd-row">
+                <div class="sd-col-label">Holdout period</div>
+                <div class="sd-col-val">Last 30 days withheld from training</div>
+                <div class="sd-col-tag tag-blue">OFFLINE</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Cross-validation</div>
+                <div class="sd-col-val">Walk-forward expanding window (8 folds)</div>
+                <div class="sd-col-tag tag-blue">OFFLINE</div>
+              </div>
+              <div class="sd-row">
+                <div class="sd-col-label">Live pilot</div>
+                <div class="sd-col-val">READ-ONLY · inspector feedback collection</div>
+                <div class="sd-col-tag tag-green">LIVE</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 3: Risks & Mitigations + Implementation Plan ── -->
+      <div class="two-col">
+
+        <!-- Risks & Mitigations -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Key Risks & Mitigations</div>
+            <div class="card-meta">Operational · data quality · model</div>
+          </div>
+          <div class="card-body">
+            <div class="risk-table">
+              <div class="risk-header">
+                <div>Risk</div><div>Impact</div><div>Mitigation</div><div>Status</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">False positives — alert fatigue</div>
+                <div class="risk-pill pill-red">HIGH</div>
+                <div class="risk-mit">Confidence threshold tuning per zone; inspector dismiss feedback used to auto-raise threshold for stable meters</div>
+                <div class="risk-status status-active">ACTIVE</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">Model drift (LSTM AutoEncoder)</div>
+                <div class="risk-pill pill-amber">MED</div>
+                <div class="risk-mit">PSI drift score monitored weekly; retrain triggered automatically when PSI &gt; 0.2; currently flagged ⚠</div>
+                <div class="risk-status status-warn">DRIFTING</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">Data quality — CT ratio errors</div>
+                <div class="risk-pill pill-amber">MED</div>
+                <div class="risk-mit">Multiplier anomaly detector flags reads at exactly ×10 or ×100 of peer median; routes to field verification</div>
+                <div class="risk-status status-ok">MONITORED</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">Communication loss / meter offline</div>
+                <div class="risk-pill pill-amber">MED</div>
+                <div class="risk-mit">Zone aggregate estimated from peer meters; offline duration KPI tracked; RC-01 raised at 6h</div>
+                <div class="risk-status status-ok">MONITORED</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">Seasonal shift (festival / summer)</div>
+                <div class="risk-pill pill-blue">LOW</div>
+                <div class="risk-mit">Karnataka holiday calendar injected as feature; monthly model fine-tune in summer (Apr–Jun)</div>
+                <div class="risk-status status-ok">PLANNED</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">False negatives — missed theft</div>
+                <div class="risk-pill pill-red">HIGH</div>
+                <div class="risk-mit">Ensemble voting: alert raised if ≥2 of 3 detectors flag; recall prioritised over precision for HIGH-level</div>
+                <div class="risk-status status-active">ACTIVE</div>
+              </div>
+              <div class="risk-row">
+                <div class="risk-name">Privacy / data sensitivity</div>
+                <div class="risk-pill pill-blue">LOW</div>
+                <div class="risk-mit">Meter IDs pseudonymised in UI; raw reads never surfaced; audit log immutable for regulatory compliance</div>
+                <div class="risk-status status-ok">COMPLIANT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Implementation Plan -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">High-Level Implementation Plan</div>
+            <div class="card-meta">6-phase rollout</div>
+          </div>
+          <div class="card-body">
+            <div class="impl-timeline">
+              <div class="impl-phase phase-done">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">01</div>
+                  <div class="impl-phase-title">Data Foundation</div>
+                  <div class="impl-phase-period">Weeks 1–3</div>
+                  <div class="impl-phase-status status-done">DONE</div>
+                </div>
+                <div class="impl-phase-items">AMI data pipeline · Kafka ingestion · 15-min interval storage · data quality baseline · zone topology mapping</div>
+              </div>
+              <div class="impl-phase phase-done">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">02</div>
+                  <div class="impl-phase-title">Preprocessing & Features</div>
+                  <div class="impl-phase-period">Weeks 4–5</div>
+                  <div class="impl-phase-status status-done">DONE</div>
+                </div>
+                <div class="impl-phase-items">Imputation logic · outlier clipping · seasonal decomposition · cyclic time embeddings · holiday calendar</div>
+              </div>
+              <div class="impl-phase phase-done">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">03</div>
+                  <div class="impl-phase-title">Model Development</div>
+                  <div class="impl-phase-period">Weeks 6–9</div>
+                  <div class="impl-phase-status status-done">DONE</div>
+                </div>
+                <div class="impl-phase-items">LSTM forecast training · Isolation Forest + LSTM AE ensemble · rule engine RC-01–05 · SHAP integration · offline evaluation</div>
+              </div>
+              <div class="impl-phase phase-active">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">04</div>
+                  <div class="impl-phase-title">Read-Only Pilot</div>
+                  <div class="impl-phase-period">Weeks 10–13</div>
+                  <div class="impl-phase-status status-active">ACTIVE NOW</div>
+                </div>
+                <div class="impl-phase-items">Inspector UI live · accept/dismiss feedback collection · threshold calibration · false-positive rate monitoring · audit log</div>
+              </div>
+              <div class="impl-phase phase-pending">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">05</div>
+                  <div class="impl-phase-title">Feedback Loop & Retrain</div>
+                  <div class="impl-phase-period">Weeks 14–16</div>
+                  <div class="impl-phase-status status-pending">UPCOMING</div>
+                </div>
+                <div class="impl-phase-items">Use pilot accept/dismiss labels to retrain models · per-zone threshold tuning · LSTM AE drift fix · precision/recall re-evaluation</div>
+              </div>
+              <div class="impl-phase phase-pending">
+                <div class="impl-phase-head">
+                  <div class="impl-phase-num">06</div>
+                  <div class="impl-phase-title">Full Production Rollout</div>
+                  <div class="impl-phase-period">Weeks 17–20</div>
+                  <div class="impl-phase-status status-pending">PLANNED</div>
+                </div>
+                <div class="impl-phase-items">Work order integration with BESCOM field ops · all 8 zones live · monthly model fine-tune cycle · SLA monitoring dashboard</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+
+const ZONES = [
+  {name:'Zone A (CBD North)',     load:248, peak:285, risk:'HIGH',  mini:[0.6,0.7,0.8,0.92,0.88,0.75]},
+  {name:'Zone B (Residential E)', load:189, peak:212, risk:'MED',   mini:[0.5,0.6,0.65,0.7,0.68,0.6]},
+  {name:'Zone C (Industrial W)',  load:312, peak:298, risk:'HIGH',  mini:[0.75,0.82,0.9,0.95,0.92,0.8]},
+  {name:'Zone D (Suburban S)',    load:142, peak:168, risk:'OK',    mini:[0.4,0.5,0.55,0.6,0.58,0.5]},
+  {name:'Zone E (Tech Park)',     load:224, peak:256, risk:'MED',   mini:[0.55,0.65,0.72,0.8,0.76,0.65]},
+  {name:'Zone F (Mixed Use)',     load:201, peak:229, risk:'OK',    mini:[0.5,0.6,0.68,0.75,0.7,0.6]},
+  {name:'Zone G (Airport)',       load:167, peak:195, risk:'OK',    mini:[0.45,0.55,0.62,0.7,0.65,0.55]},
+  {name:'Zone H (Campus)',        load:153, peak:178, risk:'OK',    mini:[0.42,0.52,0.58,0.65,0.6,0.52]}
+];
+
+const ALERTS = [
+  {id:'A001',meter:'MTR-A-08472',zone:'A',anomalyType:'SUDDEN DIP',   level:'H',conf:94,reason:'RC-03',reasonText:'peer_deviation_threshold_exceeded',      classification:'PROBABLE TAMPERING', status:null},
+  {id:'A002',meter:'MTR-C-12489',zone:'C',anomalyType:'NIGHT SPIKE',  level:'H',conf:91,reason:'RC-02',reasonText:'night_spike_00-05h',                     classification:'PROBABLE THEFT',     status:null},
+  {id:'A003',meter:'MTR-A-07721',zone:'A',anomalyType:'ZERO READ',    level:'H',conf:88,reason:'RC-01',reasonText:'zero_read_duration_6h',                  classification:'METER BYPASS / TAMPER', status:null},
+  {id:'A004',meter:'MTR-E-19048',zone:'E',anomalyType:'SUDDEN DIP',   level:'M',conf:76,reason:'RC-03',reasonText:'peer_deviation_threshold_exceeded',      classification:'POSSIBLE TAMPERING', status:null},
+  {id:'A005',meter:'MTR-B-04562',zone:'B',anomalyType:'IRREGULAR',    level:'M',conf:72,reason:'RC-05',reasonText:'pattern_break_weekday_weekend',          classification:'IRREGULAR CONSUMPTION', status:null},
+  {id:'A006',meter:'MTR-C-18293',zone:'C',anomalyType:'PEAK ANOMALY', level:'M',conf:68,reason:'RC-04',reasonText:'peer_sigma_exceeded',                    classification:'ABNORMAL CONSUMPTION', status:null},
+  {id:'A007',meter:'MTR-A-09384',zone:'A',anomalyType:'NIGHT SPIKE',  level:'M',conf:65,reason:'RC-02',reasonText:'night_spike_00-05h',                     classification:'POSSIBLE THEFT',     status:null},
+  {id:'A008',meter:'MTR-D-11029',zone:'D',anomalyType:'SUDDEN DIP',   level:'M',conf:61,reason:'RC-03',reasonText:'peer_deviation_threshold_exceeded',      classification:'POSSIBLE TAMPERING', status:null}
+];
+
+const SHAP_DATA = [
+  {feature:'14:00-15:00 dip depth',        impact:0.42,  sign:'pos'},
+  {feature:'Peer median deviation',        impact:0.38,  sign:'pos'},
+  {feature:'Previous day variance',        impact:-0.22, sign:'neg'},
+  {feature:'Time-of-day pattern break',    impact:0.18,  sign:'pos'},
+  {feature:'Weekend flag',                 impact:-0.08, sign:'neg'}
+];
+
+const AUDIT = [
+  {time:'14:28',user:'inspector_2',action:'ACCEPT',  alert:'A001'},
+  {time:'14:22',user:'inspector_1',action:'DISMISS', alert:'A004'},
+  {time:'14:15',user:'inspector_2',action:'ACCEPT',  alert:'A002'},
+  {time:'14:09',user:'inspector_1',action:'ACCEPT',  alert:'A003'},
+  {time:'13:58',user:'inspector_2',action:'DISMISS', alert:'A005'},
+  {time:'13:47',user:'inspector_1',action:'ACCEPT',  alert:'A006'},
+  {time:'13:35',user:'inspector_2',action:'ACCEPT',  alert:'A007'},
+  {time:'13:21',user:'inspector_1',action:'DISMISS', alert:'A008'}
+];
+
+const HOURS = Array.from({length:24},(_,i)=>`${String(i).padStart(2,'0')}:00`);
+const DAYS  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+let selectedZoneIdx = 0;
+let selectedAlertIdx = 0;
+let fcChart, anomChart, meterChart, detectorChart;
+let fcMode = 'hourly';
+let acceptCount = 14;
+let dismissCount = 6;
+
+// ── HELPERS ─────────────────────────────────────────────────────────────────
+function switchPanel(name) {
+  ['forecast','anomaly','audit','sysdesign'].forEach(p=>{
+    document.getElementById(`panel-${p}`).classList.toggle('active', p===name);
+  });
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['forecast','anomaly','audit','sysdesign'][i]===name);
+  });
+  document.querySelectorAll('.nav-item').forEach((n,i)=>{
+    n.classList.toggle('active', ['forecast','anomaly','audit','sysdesign'][i]===name);
+  });
+  if(name==='sysdesign') setTimeout(buildEvalCharts, 80);
+}
+
+function getBaseForZone(idx) {
+  const bases = [
+    [180,170,165,160,155,150,148,152,168,195,220,245,265,275,280,285,290,305,315,308,285,250,220,195],
+    [140,135,130,128,126,125,128,135,148,165,182,195,205,210,215,220,228,235,230,215,195,175,155,145],
+    [250,240,235,230,228,225,228,235,255,285,310,335,355,365,370,378,385,398,405,395,368,330,295,270],
+    [110,105,102,100,98,96,98,105,118,135,152,168,182,188,195,202,210,218,212,198,178,155,132,120],
+    [165,158,152,148,145,142,145,155,172,195,218,238,255,265,272,280,288,298,292,278,255,228,198,178],
+    [148,142,138,135,132,130,132,140,155,175,195,212,228,238,245,252,260,270,265,250,228,205,178,160],
+    [125,120,116,112,110,108,110,118,132,150,168,185,198,208,215,222,230,238,232,218,198,175,152,138],
+    [115,110,107,104,102,100,102,110,124,142,160,175,188,198,205,212,220,228,222,208,188,165,142,128]
+  ];
+  return bases[idx] || bases[0];
+}
+
+function getHistoricalAverage(idx) {
+  // 4-week historical average - stable per zone, no drift on re-render
+  const base = getBaseForZone(idx);
+  const rand = seededRand(idx * 61 + 300);
+  return base.map(v => +(v * 0.92 + (rand() - 0.5) * 8).toFixed(1));
+}
+
+// ── RENDER CLUSTER SUMMARY ───────────────────────────────────────────────────
+function renderClusterSummary() {
+  const highZones   = ZONES.filter(z=>z.risk==='HIGH').map(z=>z.name.split(' ')[0]+' '+z.name.split(' ')[1]);
+  const medZones    = ZONES.filter(z=>z.risk==='MED').map(z=>z.name.split(' ')[0]+' '+z.name.split(' ')[1]);
+  const peakZones   = ['Zone A','Zone C','Zone E'];
+  const flaggedMtrs = ALERTS.filter(a=>a.level==='H').length;
+
+  const chips = [
+    {
+      icon:'🔴',
+      text:`<strong>${highZones.length} zones</strong> classified HIGH RISK`,
+      sub: highZones.join(', '),
+      color:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)', textColor:'#fca5a5'
+    },
+    {
+      icon:'⚡',
+      text:`<strong>${peakZones.length} clusters</strong> — sharp evening peaks flagged`,
+      sub:'18:00–21:00 window · load risk',
+      color:'rgba(245,158,11,0.1)', border:'rgba(245,158,11,0.3)', textColor:'#fcd34d'
+    },
+    {
+      icon:'🔍',
+      text:`<strong>${flaggedMtrs} meters</strong> — repeated abnormal dips flagged`,
+      sub:'RC-03: peer_deviation_threshold_exceeded',
+      color:'rgba(139,92,246,0.1)', border:'rgba(139,92,246,0.3)', textColor:'#c4b5fd'
+    },
+    {
+      icon:'📊',
+      text:`Baseline: <strong>4-week historical average</strong> active`,
+      sub:'All zones · comparable on forecast chart',
+      color:'rgba(59,130,246,0.08)', border:'rgba(59,130,246,0.25)', textColor:'var(--accent2)'
+    }
+  ];
+
+  const html = chips.map(c=>`
+    <div style="flex:1;min-width:180px;background:${c.color};border:1px solid ${c.border};border-radius:7px;padding:8px 10px;">
+      <div style="font-size:10px;font-weight:600;color:${c.textColor};margin-bottom:3px;">${c.icon} ${c.text}</div>
+      <div style="font-size:9px;color:var(--text3);font-family:var(--mono);">${c.sub}</div>
+    </div>
+  `).join('');
+  document.getElementById('clusterSummary').innerHTML = html;
+}
+
+// ── RENDER ZONES ────────────────────────────────────────────────────────────
+function renderZones() {
+  const html = ZONES.map((z,i)=>{
+    const cls        = z.risk==='HIGH'?'high':z.risk==='MED'?'med':'ok';
+    const riskLabel  = z.risk==='HIGH'?'HIGH RISK':z.risk==='MED'?'MED RISK':'OK';
+    const riskColor  = z.risk==='HIGH'?'var(--red)':z.risk==='MED'?'var(--amber)':'var(--green)';
+    const riskBg     = z.risk==='HIGH'?'rgba(239,68,68,0.12)':z.risk==='MED'?'rgba(245,158,11,0.12)':'rgba(16,185,129,0.1)';
+    const riskBorder = z.risk==='HIGH'?'rgba(239,68,68,0.3)':z.risk==='MED'?'rgba(245,158,11,0.3)':'rgba(16,185,129,0.25)';
+    // Zones A, C, E have sharp evening-peak profiles
+    const hasEveningPeak = (i===0||i===2||i===4);
+    const eveningTag = hasEveningPeak
+      ? `<div style="font-size:8px;font-family:var(--mono);color:#fca5a5;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:3px;padding:2px 5px;margin-top:5px;letter-spacing:0.04em;">⚡ SHARP EVENING PEAK — LOAD RISK</div>`
+      : '';
+    const bars = z.mini.map(h=>`<div class="zone-mini-bar"><div class="zone-mini-fill" style="height:${h*100}%"></div></div>`).join('');
+    return `
+      <div class="zone-card ${i===selectedZoneIdx?'active':''}" onclick="selectZone(${i})">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div class="zone-name" style="margin-bottom:0">${z.name}</div>
+          <div style="font-size:8px;font-family:var(--mono);font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:3px;background:${riskBg};color:${riskColor};border:1px solid ${riskBorder}">${riskLabel}</div>
+        </div>
+        <div class="zone-stat">
+          <span class="zone-stat-label">LOAD</span>
+          <span class="zone-stat-val ${cls}">${z.load} MW</span>
+        </div>
+        <div class="zone-stat">
+          <span class="zone-stat-label">PEAK</span>
+          <span class="zone-stat-val ${cls}">${z.peak} MW</span>
+        </div>
+        ${eveningTag}
+        <div class="zone-mini">${bars}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('zoneGrid').innerHTML = html;
+}
+
+function selectZone(idx) {
+  selectedZoneIdx = idx;
+  renderZones();
+  document.getElementById('fcZoneLabel').textContent = ZONES[idx].name;
+  updateForecastChart();
+}
+
+// ── RENDER ALERTS ───────────────────────────────────────────────────────────
+function renderAlerts() {
+  const html = ALERTS.map((a,i)=>{
+    const lvlClass = a.level==='H'?'high':a.level==='M'?'medium':'low';
+    const lvlText  = a.level==='H'?'HIGH':a.level==='M'?'MEDIUM':'LOW';
+    const active = i===selectedAlertIdx?'active':'';
+    
+    let actionHTML = '';
+    if (a.status === 'accepted') {
+      const woId = `WO-${a.id}-${new Date().getFullYear()}`;
+      actionHTML = `
+        <div class="alert-status accepted">✓ ACCEPTED FOR INSPECTION</div>
+        <div class="work-order-cta">
+          <div>
+            <div class="work-order-label">📋 WORK ORDER CREATED</div>
+            <div class="work-order-id">${woId} · Assigned to Field Team</div>
+          </div>
+          <div class="work-order-btn" onclick="event.stopPropagation();alert('Work order ${woId} dispatched to field inspector team.')">DISPATCH →</div>
+        </div>
+      `;
+    } else if (a.status === 'dismissed') {
+      actionHTML = '<div class="alert-status dismissed">✗ DISMISSED</div>';
+    } else {
+      actionHTML = `
+        <div class="alert-actions">
+          <div class="alert-btn alert-btn-accept" onclick="acceptAlert(${i}, event)">✓ ACCEPT</div>
+          <div class="alert-btn alert-btn-dismiss" onclick="dismissAlert(${i}, event)">✗ DISMISS</div>
+        </div>
+      `;
     }
 
-    function updateAnomaly() {
-      const threshold = Number(anomalyRange.value);
-      const load = Number(loadRange.value);
-      const weather = Number(weatherRange.value);
-      const score = Math.min(0.98, ((load * 0.0046) + (weather * 0.0028) + 0.02));
-      const confidence = Math.round(score * 100);
-      let state = 'Queue';
-      let badge = 'Review recommended';
-      let reason = 'Night-load deviation';
-      let explanation = 'Observed usage is above peer-group baseline and diverges from the previous three-night pattern.';
-      if (confidence < threshold - 10) {
-        state = 'Monitor';
-        badge = 'Below escalation threshold';
-        reason = 'Minor peer deviation';
-        explanation = 'Consumption drift exists, but it is still within the adaptive review margin.';
-      } else if (confidence > threshold + 12) {
-        state = 'Priority';
-        badge = 'High-priority review';
-        reason = 'Persistent zero-read pattern';
-        explanation = 'Repeated low or zero intervals are inconsistent with historical demand for this meter cluster.';
+    const inspectionVerdict = {
+      'SUDDEN DIP':   '🔍 Repeated abnormal dips → flagged for inspection',
+      'ZERO READ':    '🔍 Zero-read duration exceeded → flagged for inspection',
+      'NIGHT SPIKE':  '🔍 Anomalous off-peak consumption → flagged for inspection',
+      'IRREGULAR':    '🔍 Inconsistent usage pattern → flagged for review',
+      'PEAK ANOMALY': '🔍 Peer-group consumption deviation → flagged for review',
+    }[a.anomalyType] || '🔍 Irregular consumption pattern → flagged';
+
+    const classColor = a.classification && a.classification.includes('THEFT') ? 'var(--red)'
+      : a.classification && a.classification.includes('TAMPER') ? '#f97316'
+      : a.classification && a.classification.includes('BYPASS') ? 'var(--red)'
+      : 'var(--amber)';
+    const classBg = a.classification && (a.classification.includes('THEFT')||a.classification.includes('BYPASS'))
+      ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.10)';
+
+    return `
+      <div class="alert-item ${lvlClass} ${active}" onclick="selectAlert(${i})">
+        <div class="alert-head">
+          <div class="alert-type">${a.meter}</div>
+          <div class="alert-badge ${lvlClass}">${lvlText}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap;">
+          <div style="font-size:8px;font-family:var(--mono);font-weight:700;padding:2px 6px;border-radius:3px;background:${classBg};color:${classColor};border:1px solid ${classColor}33;letter-spacing:0.04em;">${a.classification}</div>
+          <div style="font-size:8px;font-family:var(--mono);color:var(--text3);">Reason code: <span style="color:var(--accent2)">${a.reason}: ${a.reasonText}</span></div>
+        </div>
+        <div class="alert-meta">
+          <span>Zone ${a.zone}</span>
+          <span>•</span>
+          <span>${a.anomalyType}</span>
+        </div>
+        <div style="font-size:9px;color:var(--text2);font-family:var(--mono);margin-bottom:4px;line-height:1.4;">${inspectionVerdict}</div>
+        <div class="alert-conf">Confidence: <span>${a.conf}%</span> · <span style="color:var(--text3);font-size:9px;">Actionable output: inspection dispatch</span></div>
+        ${actionHTML}
+      </div>
+    `;
+  }).join('');
+  document.getElementById('alertList').innerHTML = html;
+}
+
+function selectAlert(idx) {
+  selectedAlertIdx = idx;
+  renderAlerts();
+  const a = ALERTS[idx];
+  document.getElementById('meterLabel').textContent = a.meter;
+  document.getElementById('shapLabel').textContent = a.meter;
+  updateMeterChart(idx);
+  updateMiniCompareCharts(idx);
+}
+
+function acceptAlert(idx, event) {
+  event.stopPropagation();
+  if (ALERTS[idx].status) return;
+  
+  ALERTS[idx].status = 'accepted';
+  acceptCount++;
+  updateAcceptRate();
+  renderAlerts();
+  
+  // Add to audit log
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  AUDIT.unshift({
+    time: timeStr,
+    user: 'inspector_live',
+    action: 'ACCEPT',
+    alert: ALERTS[idx].id
+  });
+  renderAudit();
+}
+
+function dismissAlert(idx, event) {
+  event.stopPropagation();
+  if (ALERTS[idx].status) return;
+  
+  ALERTS[idx].status = 'dismissed';
+  dismissCount++;
+  updateAcceptRate();
+  renderAlerts();
+  
+  // Add to audit log
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  AUDIT.unshift({
+    time: timeStr,
+    user: 'inspector_live',
+    action: 'DISMISS',
+    alert: ALERTS[idx].id
+  });
+  renderAudit();
+}
+
+function updateAcceptRate() {
+  const total = acceptCount + dismissCount;
+  const rate = total > 0 ? Math.round((acceptCount / total) * 100) : 72;
+  
+  // Update KPI - use dedicated ID
+  const kpiVal = document.getElementById('acceptRateKpi');
+  if (kpiVal) kpiVal.innerHTML = `${rate}<span style="font-size:14px">%</span>`;
+  
+  // Update KPI detail
+  document.getElementById('acceptRateDetail').textContent = `ACCEPTED: ${acceptCount} | DISMISSED: ${dismissCount}`;
+  
+  // Update KPI bar
+  const kpiBar = document.getElementById('acceptRateBar');
+  if (kpiBar) kpiBar.style.width = `${rate}%`;
+}
+
+// ── RENDER SHAP ─────────────────────────────────────────────────────────────
+function renderShap() {
+  const html = SHAP_DATA.map(d=>{
+    const w = Math.abs(d.impact)*100;
+    const cls = d.sign==='pos'?'pos':'neg';
+    return `
+      <div class="shap-row">
+        <div class="shap-label">${d.feature}</div>
+        <div class="shap-bar-wrap">
+          <div class="shap-bar ${cls}" style="width:${w}%"></div>
+        </div>
+        <div class="shap-val">${d.impact>0?'+':''}${d.impact.toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('shapViz').innerHTML = html;
+}
+
+// ── RENDER AUDIT ────────────────────────────────────────────────────────────
+function renderAudit() {
+  const html = AUDIT.slice(0, 50).map(a=>{
+    const actCls = a.action==='ACCEPT'?'accept':a.action==='DISMISS'?'dismiss':'inspect';
+    return `
+      <div class="audit-item">
+        <div>
+          <span class="audit-time">${a.time}</span>
+          <span class="audit-user"> ${a.user}</span>
+        </div>
+        <div class="audit-action ${actCls}">${a.action} ${a.alert}</div>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('auditLog').innerHTML = html;
+}
+
+// ── SPIKE NOTIFICATION ──────────────────────────────────────────────────────
+function dismissInlineSpike() {
+  document.getElementById('spikeInlineCard').classList.remove('show');
+}
+
+function checkForSpikes(forecastData, threshold) {
+  // Check evening peak window (18:00-21:00 = indices 18-21)
+  const eveningPeak = forecastData.slice(18, 22);
+  const maxPeak = Math.max(...eveningPeak);
+  const maxPeakHour = 18 + eveningPeak.indexOf(maxPeak);
+  
+  const inlineCard = document.getElementById('spikeInlineCard');
+  const inlineBody = document.getElementById('spikeInlineBody');
+  
+  if (maxPeak > threshold) {
+    const breach = maxPeak - threshold;
+    // Show inline card
+    if (inlineCard && inlineBody) {
+      inlineBody.innerHTML = `Zone <strong>${ZONES[selectedZoneIdx].name}</strong> — forecast peaks at <strong style="color:var(--red)">${Math.round(maxPeak)} MW</strong> at ${String(maxPeakHour).padStart(2,'0')}:00, breaching the ${threshold} MW risk threshold by <strong style="color:var(--red)">+${Math.round(breach)} MW</strong>. Evening peak window 18:00–21:00 flagged for load risk.`;
+      inlineCard.classList.add('show');
+    }
+    showSpikeNotification(ZONES[selectedZoneIdx].name, maxPeak, maxPeakHour, threshold, breach);
+  } else {
+    if (inlineCard) inlineCard.classList.remove('show');
+  }
+}
+
+function showSpikeNotification(zoneName, peakValue, peakHour, threshold, breach) {
+  document.getElementById('spikeZone').textContent = zoneName;
+  document.getElementById('spikeForecast').textContent = `${Math.round(peakValue)} MW at ${String(peakHour).padStart(2,'0')}:00`;
+  document.getElementById('spikeThreshold').textContent = `${threshold} MW`;
+  document.getElementById('spikeBreach').textContent = `+${Math.round(breach)} MW (${((breach/threshold)*100).toFixed(1)}%)`;
+  
+  const notif = document.getElementById('spikeNotification');
+  notif.classList.add('show');
+  
+  // Auto-hide after 15 seconds
+  setTimeout(() => {
+    notif.classList.remove('show');
+  }, 15000);
+}
+
+function closeSpikeNotif() {
+  document.getElementById('spikeNotification').classList.remove('show');
+}
+
+function goToForecast() {
+  closeSpikeNotif();
+  switchPanel('forecast');
+}
+
+// ── CHARTS ──────────────────────────────────────────────────────────────────
+function getForecastChartData(zoneIdx) {
+  const base = getBaseForZone(zoneIdx);
+  const hist = getHistoricalAverage(zoneIdx);
+  const rand = seededRand(zoneIdx * 71 + 400);
+  const actual = base.map(v => +(v + (rand() - 0.5) * 16).toFixed(1));
+  const upper  = base.map(v => +(v + 24 + rand() * 8).toFixed(1));
+  const lower  = base.map(v => +(v - 24 - rand() * 8).toFixed(1));
+  return { base, hist, actual, upper, lower };
+}
+
+function buildForecastChart() {
+  const ctx = document.getElementById('forecastChart').getContext('2d');
+  const { base, hist, actual, upper, lower } = getForecastChartData(selectedZoneIdx);
+  const thr = Array(24).fill(295);
+
+  // Check for spikes on initial load
+  checkForSpikes(base, 295);
+
+  fcChart = new Chart(ctx, {
+    type:'line',
+    data:{
+      labels: HOURS,
+      datasets:[
+        {label:'Upper CI', data:upper, borderColor:'transparent', backgroundColor:'rgba(59,130,246,0.10)', fill:'+1', pointRadius:0, tension:0.4},
+        {label:'Lower CI', data:lower, borderColor:'transparent', backgroundColor:'rgba(59,130,246,0.10)', fill:false, pointRadius:0, tension:0.4},
+        {label:'Actual', data:actual, borderColor:'rgba(148,163,184,0.7)', borderWidth:1.5, borderDash:[5,4], backgroundColor:'transparent', pointRadius:0, tension:0.4},
+        {label:'Historical Average', data:hist, borderColor:'rgba(100,116,139,0.6)', borderWidth:1.5, borderDash:[4,3], backgroundColor:'transparent', pointRadius:0, tension:0.4},
+        {label:'Forecast', data:base, borderColor:'#3b82f6', borderWidth:2, backgroundColor:'transparent', pointRadius:3, pointBackgroundColor:'#3b82f6', tension:0.4},
+        {label:'Risk Threshold', data:thr, borderColor:'rgba(239,68,68,0.55)', borderWidth:1, borderDash:[7,5], backgroundColor:'transparent', pointRadius:0},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      animation:{duration:600},
+      plugins:{
+        legend:{display:false},
+        tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(17,24,39,0.92)',titleColor:'#e2e8f4',bodyColor:'#94a3b8',borderColor:'rgba(99,132,199,0.2)',borderWidth:1,
+          callbacks:{label:c=>`${c.dataset.label}: ${Math.round(c.parsed.y)} MW`}},
+        annotation: {
+          annotations: {
+            eveningPeak: {
+              type: 'box',
+              xMin: 18,
+              xMax: 21,
+              backgroundColor: 'rgba(239,68,68,0.08)',
+              borderColor: 'rgba(239,68,68,0.35)',
+              borderWidth: 1,
+              borderDash: [4, 4],
+              label: {
+                display: true,
+                content: 'Evening Peak — Load Risk Flagged',
+                position: 'start',
+                backgroundColor: 'rgba(239,68,68,0.15)',
+                color: '#fca5a5',
+                font: { size: 9, family: 'JetBrains Mono', weight: 600 },
+                padding: 4,
+                yAdjust: -10
+              }
+            }
+          }
+        }
+      },
+      scales:{
+        x:{grid:{color:'rgba(99,132,199,0.06)'},ticks:{font:{size:9,family:'JetBrains Mono'},color:'#5a7099',maxTicksLimit:13}},
+        y:{grid:{color:'rgba(99,132,199,0.06)'},ticks:{font:{size:9,family:'JetBrains Mono'},color:'#5a7099',callback:v=>v+' MW'}}
       }
-      document.getElementById('anomScore').textContent = score.toFixed(2);
-      document.getElementById('anomConfidence').textContent = confidence + '%';
-      document.getElementById('anomState').textContent = state;
-      document.getElementById('alertBadge').textContent = badge;
-      document.getElementById('reasonCode').textContent = reason;
-      document.getElementById('explanation').textContent = explanation;
     }
+  });
+}
 
-    [loadRange, weatherRange, anomalyRange].forEach(el => {
-      el.addEventListener('input', () => {
-        renderBars();
-        updateAnomaly();
-      });
-    });
+function updateForecastChart() {
+  if(!fcChart) return;
+  if(fcMode==='hourly') {
+    const { base, hist, actual, upper, lower } = getForecastChartData(selectedZoneIdx);
+    fcChart.data.labels               = HOURS;
+    fcChart.data.datasets[0].data     = upper;
+    fcChart.data.datasets[1].data     = lower;
+    fcChart.data.datasets[2].data     = actual;
+    fcChart.data.datasets[3].data     = hist;
+    fcChart.data.datasets[4].data     = base;
+    fcChart.data.datasets[5].data     = Array(24).fill(295);
+    fcChart.options.plugins.annotation.annotations.eveningPeak.xMin = 18;
+    fcChart.options.plugins.annotation.annotations.eveningPeak.xMax = 21;
+    checkForSpikes(base, 295);
+  } else {
+    const base = [2850,2920,2780,3050,3180,2400,2200];
+    const rand  = seededRand(selectedZoneIdx * 43 + 500);
+    const hist  = base.map(v => +(v * 0.92 + (rand() - 0.5) * 100).toFixed(0));
+    const rand2 = seededRand(selectedZoneIdx * 29 + 600);
+    const actual = base.map((v,i) => i < 4 ? +(v + (rand2() - 0.5) * 80).toFixed(0) : null);
+    fcChart.data.labels               = DAYS;
+    fcChart.data.datasets[0].data     = base.map(v => v + 190);
+    fcChart.data.datasets[1].data     = base.map(v => v - 190);
+    fcChart.data.datasets[2].data     = actual;
+    fcChart.data.datasets[3].data     = hist;
+    fcChart.data.datasets[4].data     = base;
+    fcChart.data.datasets[5].data     = Array(7).fill(3050);
+    fcChart.options.plugins.annotation.annotations.eveningPeak.xMin = -1;
+    fcChart.options.plugins.annotation.annotations.eveningPeak.xMax = -1;
+  }
+  fcChart.update();
+}
 
-    renderBars();
-    updateAnomaly();
-  </script>
+function setFcMode(mode) {
+  fcMode=mode;
+  document.getElementById('btn-hourly').classList.toggle('active',mode==='hourly');
+  document.getElementById('btn-dayahead').classList.toggle('active',mode==='dayahead');
+  updateForecastChart();
+}
+
+function buildAnomalyChart() {
+  const ctx = document.getElementById('anomalyChart').getContext('2d');
+  const hi=ALERTS.filter(a=>a.level==='H').map(a=>({x:a.conf,y:+(a.conf/100+Math.random()*.1-.05).toFixed(2)}));
+  const med=ALERTS.filter(a=>a.level==='M').map(a=>({x:a.conf,y:+(a.conf/100-.15+Math.random()*.08).toFixed(2)}));
+  const lo=Array.from({length:22},()=>({x:Math.round(10+Math.random()*50),y:+(Math.random()*.28).toFixed(2)}));
+  anomChart = new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[
+      {label:'High risk',  data:hi,  backgroundColor:'rgba(239,68,68,0.8)',  pointRadius:8,  pointStyle:'triangle'},
+      {label:'Medium risk',data:med, backgroundColor:'rgba(245,158,11,0.8)', pointRadius:7,  pointStyle:'rectRot'},
+      {label:'Normal',     data:lo,  backgroundColor:'rgba(16,185,129,0.5)', pointRadius:4},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(17,24,39,0.92)',titleColor:'#e2e8f4',bodyColor:'#94a3b8',borderColor:'rgba(99,132,199,0.2)',borderWidth:1,
+        callbacks:{label:c=>`Conf: ${c.parsed.x}%  Score: ${c.parsed.y.toFixed(2)}`}}},
+      scales:{
+        x:{title:{display:true,text:'Confidence (%)',font:{size:9,family:'JetBrains Mono'},color:'#5a7099'},min:0,max:100,grid:{color:'rgba(99,132,199,0.06)'},ticks:{font:{size:9,family:'JetBrains Mono'},color:'#5a7099'}},
+        y:{title:{display:true,text:'Anomaly score',font:{size:9,family:'JetBrains Mono'},color:'#5a7099'},min:0,max:1,grid:{color:'rgba(99,132,199,0.06)'},ticks:{font:{size:9,family:'JetBrains Mono'},color:'#5a7099'}}
+      }
+    }
+  });
+}
+
+let normalMiniChart, suspiciousMiniChart;
+
+function buildMiniCompareCharts() {
+  const labels = Array.from({length:24}, (_,i)=>`${i}h`);
+  const rand = seededRand(999);
+  const normalData = labels.map((_,i) => +(7 + 8*Math.sin(i/24*2*Math.PI - 0.5) + (rand()-0.5)*0.8).toFixed(2));
+
+  const nCtx = document.getElementById('normalMiniChart').getContext('2d');
+  normalMiniChart = new Chart(nCtx, {
+    type:'line',
+    data:{labels, datasets:[{data:normalData, borderColor:'#10b981', borderWidth:1.5, backgroundColor:'rgba(16,185,129,0.1)', fill:true, pointRadius:0, tension:0.4}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}}, scales:{x:{display:false}, y:{display:false}}, animation:{duration:400}}
+  });
+
+  const rand2 = seededRand(777);
+  const suspData = normalData.map((v,i) => i>=10&&i<=16 ? +(v*0.12+(rand2()*0.3)).toFixed(2) : +(v+(rand2()-0.5)*0.6).toFixed(2));
+
+  const sCtx = document.getElementById('suspiciousMiniChart').getContext('2d');
+  suspiciousMiniChart = new Chart(sCtx, {
+    type:'line',
+    data:{labels, datasets:[{data:suspData, borderColor:'#ef4444', borderWidth:1.5, backgroundColor:'rgba(239,68,68,0.1)', fill:true, pointRadius:0, tension:0.3}]},
+    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}}, scales:{x:{display:false}, y:{display:false}}, animation:{duration:400}}
+  });
+}
+
+function updateMiniCompareCharts(alertIdx) {
+  if (!normalMiniChart || !suspiciousMiniChart) return;
+  const a = ALERTS[alertIdx];
+  const labels = Array.from({length:24}, (_,i)=>`${i}h`);
+
+  // Seeded per alertIdx so charts are stable on repeated clicks
+  const randN = seededRand(alertIdx * 53 + 100);
+  const normalData = labels.map((_,i) => +(7 + 8*Math.sin(i/24*2*Math.PI - 0.5) + (randN()-0.5)*0.6).toFixed(2));
+
+  const randS = seededRand(alertIdx * 89 + 200);
+  let suspData;
+
+  if (a.anomalyType === 'ZERO READ') {
+    suspData = normalData.map((v,i) => i>=8&&i<=14 ? 0 : +(v+(randS()-0.5)*0.8).toFixed(2));
+    document.getElementById('suspiciousAvg').textContent = '0.8 kWh';
+    document.getElementById('suspiciousDev').textContent = '5.1 ← flagged';
+  } else if (a.anomalyType === 'NIGHT SPIKE') {
+    suspData = normalData.map((v,i) => (i<3||i>=22) ? +(v*3.1+randS()*1.5).toFixed(2) : +(v+(randS()-0.5)*0.8).toFixed(2));
+    document.getElementById('suspiciousAvg').textContent = '14.2 kWh';
+    document.getElementById('suspiciousDev').textContent = '3.8 ← flagged';
+  } else if (a.anomalyType === 'PEAK ANOMALY') {
+    suspData = normalData.map((v,i) => (i>=16&&i<=22) ? +(v*2.1+randS()*1.2).toFixed(2) : +(v+(randS()-0.5)*0.7).toFixed(2));
+    document.getElementById('suspiciousAvg').textContent = '18.7 kWh';
+    document.getElementById('suspiciousDev').textContent = '3.2 ← flagged';
+  } else if (a.anomalyType === 'IRREGULAR') {
+    suspData = normalData.map((v,i) => i%7===0 ? +(v*1.9+randS()).toFixed(2) : i%11===0 ? +(v*0.25).toFixed(2) : +(v+(randS()-0.5)*0.8).toFixed(2));
+    document.getElementById('suspiciousAvg').textContent = '7.3 kWh';
+    document.getElementById('suspiciousDev').textContent = '2.9 ← flagged';
+  } else {
+    // SUDDEN DIP default
+    suspData = normalData.map((v,i) => i>=10&&i<=16 ? +(v*0.15+randS()*0.3).toFixed(2) : +(v+(randS()-0.5)*0.8).toFixed(2));
+    document.getElementById('suspiciousAvg').textContent = '2.1 kWh';
+    document.getElementById('suspiciousDev').textContent = '4.2 ← flagged';
+  }
+
+  const normalAvg = (normalData.reduce((a,b)=>a+b,0)/normalData.length).toFixed(1);
+  document.getElementById('normalAvg').textContent = `${normalAvg} kWh`;
+
+  normalMiniChart.data.datasets[0].data = normalData;
+  suspiciousMiniChart.data.datasets[0].data = suspData;
+  normalMiniChart.update('none');
+  suspiciousMiniChart.update('none');
+}
+
+// Deterministic pseudo-random seeded by value — avoids chart collapse on update
+function seededRand(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+function getMeterChartData(alertIdx) {
+  const a = ALERTS[alertIdx];
+  const rand = seededRand(alertIdx * 137 + 42); // stable per alert, no Math.random drift
+  const labels = Array.from({length:48},(_,i)=>`${String(Math.floor(i/2)).padStart(2,'0')}:${i%2===0?'00':'30'}`);
+
+  // Stable peer baseline — smooth diurnal sine curve, seeded
+  const baseline = labels.map((_,i) => {
+    const sine = 8 + 12 * Math.sin(i / 48 * 2 * Math.PI - 0.5);
+    return +(sine + (rand() - 0.5) * 1.2).toFixed(2);
+  });
+
+  const upper = baseline.map(v => +(v * 1.35).toFixed(2));
+  const lower = baseline.map(v => +(v * 0.65).toFixed(2));
+
+  // Meter line — anomaly pattern injected per type
+  const meter = baseline.map((v, i) => {
+    if (a.anomalyType === 'ZERO READ' && i >= 20 && i <= 30)
+      return 0;
+    if (a.anomalyType === 'NIGHT SPIKE' && (i < 6 || i > 42))
+      return +(v * 2.9 + rand() * 2).toFixed(2);
+    if ((a.anomalyType === 'SUDDEN DIP' || a.level === 'H') && i >= 28 && i <= 38)
+      return +(v * 0.17 + rand() * 0.4).toFixed(2);
+    if (a.anomalyType === 'PEAK ANOMALY' && i >= 16 && i <= 22)
+      return +(v * 1.8 + rand() * 1.5).toFixed(2);
+    if (a.anomalyType === 'IRREGULAR') {
+      // Intermittent spikes and dips
+      if (i % 7 === 0) return +(v * 1.7 + rand()).toFixed(2);
+      if (i % 11 === 0) return +(v * 0.3).toFixed(2);
+    }
+    return +(v + (rand() - 0.5) * 1.2).toFixed(2);
+  });
+
+  const meterColor = a.level === 'H' ? '#ef4444' : '#f59e0b';
+  return { labels, baseline, upper, lower, meter, meterColor };
+}
+
+function buildMeterChart() {
+  const ctx = document.getElementById('meterChart').getContext('2d');
+  const { labels, baseline, upper, lower, meter } = getMeterChartData(0);
+
+  meterChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [
+      { label:'Peer +3σ',    data:upper,    borderColor:'transparent', backgroundColor:'rgba(59,130,246,0.07)', fill:'+1', pointRadius:0, tension:0.4 },
+      { label:'Peer -3σ',   data:lower,    borderColor:'transparent', fill:false, pointRadius:0, tension:0.4 },
+      { label:'Peer median', data:baseline, borderColor:'rgba(100,116,139,0.6)', borderWidth:1, borderDash:[3,2], backgroundColor:'transparent', pointRadius:0, tension:0.4 },
+      { label:'Meter',       data:meter,    borderColor:'#ef4444', borderWidth:2, backgroundColor:'transparent', pointRadius:0, tension:0.3 },
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:{duration:500},
+      plugins:{
+        legend:{display:false},
+        tooltip:{mode:'index',intersect:false,backgroundColor:'rgba(17,24,39,0.92)',titleColor:'#e2e8f4',bodyColor:'#94a3b8',borderColor:'rgba(99,132,199,0.2)',borderWidth:1,
+          callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(1)} kWh`}}
+      },
+      scales:{
+        x:{ grid:{color:'rgba(99,132,199,0.05)'}, ticks:{font:{size:8,family:'JetBrains Mono'},color:'#5a7099',maxTicksLimit:13} },
+        y:{ grid:{color:'rgba(99,132,199,0.05)'}, ticks:{font:{size:8,family:'JetBrains Mono'},color:'#5a7099',callback:v=>v.toFixed(0)+' kWh'} }
+      }
+    }
+  });
+}
+
+function updateMeterChart(alertIdx) {
+  if (!meterChart) return;
+  const { labels, baseline, upper, lower, meter, meterColor } = getMeterChartData(alertIdx);
+
+  // Update ALL four datasets together — prevents peer band / meter mismatch
+  meterChart.data.labels                  = labels;
+  meterChart.data.datasets[0].data        = upper;
+  meterChart.data.datasets[1].data        = lower;
+  meterChart.data.datasets[2].data        = baseline;
+  meterChart.data.datasets[3].data        = meter;
+  meterChart.data.datasets[3].borderColor = meterColor;
+  meterChart.update('none');
+}
+
+function buildDetectorChart() {
+  const ctx = document.getElementById('detectorChart').getContext('2d');
+  detectorChart=new Chart(ctx,{
+    type:'doughnut',
+    data:{
+      labels:['Isolation Forest (55%)','LSTM AE (35%)','Rule-based (10%)'],
+      datasets:[{data:[55,35,10],backgroundColor:['#3b82f6','#8b5cf6','#10b981'],borderWidth:0,hoverOffset:4}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'68%',
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(17,24,39,0.92)',titleColor:'#e2e8f4',bodyColor:'#94a3b8',borderColor:'rgba(99,132,199,0.2)',borderWidth:1}}
+    }
+  });
+}
+
+// ── SYSTEM DESIGN TAB (no charts needed — pure HTML) ──────────────────────
+function buildEvalCharts() {
+  // All content is static HTML; nothing to build.
+  // Reserved for future: confusion matrix chart, pipeline diagram SVG, etc.
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderClusterSummary();
+renderZones();
+renderAlerts();
+renderShap();
+renderAudit();
+
+setTimeout(()=>{
+  buildForecastChart();
+  buildAnomalyChart();
+  buildMiniCompareCharts();
+  buildMeterChart();
+  buildDetectorChart();
+},80);
+
+// Live data refresh (simulated)
+setInterval(()=>{
+  if(fcChart && fcMode==='hourly') {
+    const base=getBaseForZone(selectedZoneIdx);
+    const lastIdx = new Date().getHours();
+    base[lastIdx]=base[lastIdx]+(Math.random()-.5)*5;
+    fcChart.data.datasets[4].data=base;
+    fcChart.update('none');
+  }
+}, 8000);
+</script>
 </body>
 </html>
